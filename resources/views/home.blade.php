@@ -14,30 +14,33 @@
         33% { transform: translate(30px, -50px) scale(1.1); }
         66% { transform: translate(-20px, 20px) scale(0.9); }
         100% { transform: translate(0px, 0px) scale(1); }
-}
-.animate-blob { animation: blob 7s infinite; }
-.animation-delay-2000 { animation-delay: 2s; }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
     </style>
 </head>
 <body class="bg-white text-slate-800">
 
     <header class="gradient-bg min-h-screen flex flex-col">
-        <nav class="container mx-auto px-6 py-8 flex justify-between items-center">
-            <div class="text-2xl font-bold tracking-tighter text-blue-600">LOGO.</div>
+        <nav class="container mx-auto px-6 py-8 flex justify-between items-center bg-white/80 backdrop-blur-md z-30 rounded-b-3xl shadow-sm border-b border-slate-100/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg">M</div>
+                <a href="{{ route('home') }}" class="text-2xl font-black tracking-tighter bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">MyDrive</a>
+            </div>
             <div class="space-x-4">
-                <a href="{{ route('dashboard') }}" class="px-6 py-2.5 bg-white border border-blue-600 text-blue-600 font-semibold rounded-full hover:bg-blue-50 transition-all shadow-sm">Dashboard</a>
-                <button onclick="showDevelopmentAlert()" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition shadow-md shadow-blue-200">Contact</button>
+                <a href="{{ route('dashboard') }}" class="px-6 py-2.5 bg-white border-2 border-blue-600 text-blue-600 font-bold rounded-full hover:bg-blue-50 transition shadow-sm">Dashboard</a>
+                <button onclick="showDevelopmentAlert()" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold rounded-full hover:shadow-lg hover:shadow-blue-300 transition shadow-md">Contact</button>
             </div>
         </nav>
 
-        <div id="modalDev" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[600] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center animate-slide-up">
-            <div class="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🛠️</div>
-            <h3 class="text-xl font-bold text-slate-800 mb-2 tracking-tighter">Under Development</h3>
-            <p class="text-slate-400 text-xs mb-8 leading-relaxed">Sabar ya Sulton, fitur <b>Contact</b> ini masih dalam tahap pengembangan tim kami.</p>
-            <button onclick="closeDevModal()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-xl hover:bg-slate-800 transition">Tunggu Saja</button>
+        <div id="modalDev" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-600 hidden flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-10 shadow-2xl text-center animate-slide-up">
+                <div class="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🛠️</div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2 tracking-tighter">Under Development</h3>
+                <p class="text-slate-400 text-xs mb-8 leading-relaxed">Sabar ya Sulton, fitur <b>Contact</b> ini masih dalam tahap pengembangan tim kami.</p>
+                <button onclick="closeDevModal()" class="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-xl hover:bg-slate-800 transition">Tunggu Saja</button>
+            </div>
         </div>
-    </div>
 
         <div class="container mx-auto px-6 flex-1 flex flex-col md:flex-row items-center justify-between gap-12 py-12">
             <div class="w-full md:w-1/2 space-y-6 text-center md:text-left">
@@ -70,7 +73,7 @@
             <div class="flex flex-col md:flex-row gap-16 items-start">
 
                 <div class="w-full md:w-1/3 group">
-                    <div class="bg-white rounded-3xl p-8 shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] border border-slate-100 transition-all group-hover:-translate-y-2">
+                    <div class="bg-white rounded-3xl p-8 shadow-[0_20px_50px_rgba(8,112,184,0.07)] border border-slate-100 transition-all group-hover:-translate-y-2">
                         <div class="w-full aspect-square bg-slate-200 rounded-2xl mb-6 overflow-hidden">
                             <img src="https://ui-avatars.com/api/?name=Ari+Kusumastuti&size=512&background=random" alt="Profile" class="w-full h-full object-cover">
                         </div>
