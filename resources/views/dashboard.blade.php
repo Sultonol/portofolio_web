@@ -132,7 +132,7 @@
                                 <div class="bg-white p-10 rounded-3xl shadow-xl shadow-slate-200/30 border border-slate-100/50 flex flex-col min-h-[620px] transition-all hover:-translate-y-1 hover:shadow-2xl">
                                     <div class="space-y-8 text-left flex-1">
                                         <div class="aspect-square w-full rounded-2xl overflow-hidden shadow-lg border-4 border-slate-100 bg-gradient-to-br from-blue-50 to-slate-50">
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($profileData->full_name ?? 'User') }}&background=0D8ABC&color=fff&size=512&bold=true"
+                                            <img src="{{ asset('images/image.png') }}?name={{ urlencode($profileData->full_name ?? 'User') }}&background=0D8ABC&color=fff&size=512&bold=true"
                                                  class="w-full h-full object-cover">
                                         </div>
 
@@ -443,17 +443,51 @@
     </form>
 
     <script>
-        function showDevelopmentAlert() { document.getElementById('modalDev').classList.remove('hidden'); }
-        function closeDevModal() { document.getElementById('modalDev').classList.add('hidden'); }
+        // Fungsi untuk disable/enable interaksi konten di belakang modal
+        function toggleBackdropInteraction(isOpen) {
+            const main = document.querySelector('main');
+            const aside = document.querySelector('aside');
+            if (main) main.style.pointerEvents = isOpen ? 'none' : 'auto';
+            if (aside) aside.style.pointerEvents = isOpen ? 'none' : 'auto';
+        }
+
+        function showDevelopmentAlert() {
+            document.getElementById('modalDev').classList.remove('hidden');
+            toggleBackdropInteraction(true);
+        }
+        function closeDevModal() {
+            document.getElementById('modalDev').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
+
         function checkCategoryBeforeFolder() {
             const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.get('category_id')) document.getElementById('modalAlert').classList.remove('hidden');
-            else document.getElementById('modalFolder').classList.remove('hidden');
+            if (!urlParams.get('category_id')) {
+                document.getElementById('modalAlert').classList.remove('hidden');
+                toggleBackdropInteraction(true);
+            }
+            else {
+                document.getElementById('modalFolder').classList.remove('hidden');
+                toggleBackdropInteraction(true);
+            }
         }
-        function closeAlert() { document.getElementById('modalAlert').classList.add('hidden'); }
-        function closeModalFolder() { document.getElementById('modalFolder').classList.add('hidden'); }
-        function openShortcutModal() { document.getElementById('modalShortcut').classList.remove('hidden'); }
-        function closeShortcutModal() { document.getElementById('modalShortcut').classList.add('hidden'); }
+        function closeAlert() {
+            document.getElementById('modalAlert').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
+        function closeModalFolder() {
+            document.getElementById('modalFolder').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
+
+        function openShortcutModal() {
+            document.getElementById('modalShortcut').classList.remove('hidden');
+            toggleBackdropInteraction(true);
+        }
+        function closeShortcutModal() {
+            document.getElementById('modalShortcut').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
 
         function openEditShortcutModal(id, name, url) {
             console.log("Membuka Edit untuk ID:", id);
@@ -467,11 +501,22 @@
                 inputName.value = name;
                 inputUrl.value = url;
                 modal.classList.remove('hidden');
+                toggleBackdropInteraction(true);
+                // Event listener untuk menutup modal saat klik di luar
+                modal.addEventListener('click', function handleOutsideClick(e) {
+                    if (e.target === modal) {
+                        closeEditShortcutModal();
+                        modal.removeEventListener('click', handleOutsideClick);
+                    }
+                });
             } else {
                 console.error("Elemen modal edit tidak ditemukan!");
             }
         }
-        function closeEditShortcutModal() { document.getElementById('modalEditShortcut').classList.add('hidden'); }
+        function closeEditShortcutModal() {
+            document.getElementById('modalEditShortcut').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
 
         function openEditModal(type, id, currentName) {
             const modal = document.getElementById('modalEdit');
@@ -482,9 +527,20 @@
                 form.action = (type === 'folder') ? '/folder/rename/' + id : '/file/rename/' + id;
                 input.value = currentName;
                 modal.classList.remove('hidden');
+                toggleBackdropInteraction(true);
+                // Event listener untuk menutup modal saat klik di luar
+                modal.addEventListener('click', function handleOutsideClick(e) {
+                    if (e.target === modal) {
+                        closeEditModal();
+                        modal.removeEventListener('click', handleOutsideClick);
+                    }
+                });
             }
         }
-        function closeEditModal() { document.getElementById('modalEdit').classList.add('hidden'); }
+        function closeEditModal() {
+            document.getElementById('modalEdit').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
 
         function openDeleteModal(type, id) {
             const modal = document.getElementById('modalDelete');
@@ -493,9 +549,57 @@
             if(modal && form) {
                 form.action = (type === 'folder') ? '/folder/delete/' + id : '/file/delete/' + id;
                 modal.classList.remove('hidden');
+                toggleBackdropInteraction(true);
+                // Event listener untuk menutup modal saat klik di luar
+                modal.addEventListener('click', function handleOutsideClick(e) {
+                    if (e.target === modal) {
+                        closeDeleteModal();
+                        modal.removeEventListener('click', handleOutsideClick);
+                    }
+                });
             }
         }
-        function closeDeleteModal() { document.getElementById('modalDelete').classList.add('hidden'); }
+        function closeDeleteModal() {
+            document.getElementById('modalDelete').classList.add('hidden');
+            toggleBackdropInteraction(false);
+        }
+
+        // Tambahkan event listener untuk modal lainnya saat DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalDev = document.getElementById('modalDev');
+            const modalAlert = document.getElementById('modalAlert');
+            const modalFolder = document.getElementById('modalFolder');
+            const modalShortcut = document.getElementById('modalShortcut');
+
+            if (modalDev) {
+                modalDev.addEventListener('click', function(e) {
+                    if (e.target === modalDev) {
+                        closeDevModal();
+                    }
+                });
+            }
+            if (modalAlert) {
+                modalAlert.addEventListener('click', function(e) {
+                    if (e.target === modalAlert) {
+                        closeAlert();
+                    }
+                });
+            }
+            if (modalFolder) {
+                modalFolder.addEventListener('click', function(e) {
+                    if (e.target === modalFolder) {
+                        closeModalFolder();
+                    }
+                });
+            }
+            if (modalShortcut) {
+                modalShortcut.addEventListener('click', function(e) {
+                    if (e.target === modalShortcut) {
+                        closeShortcutModal();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>

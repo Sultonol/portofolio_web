@@ -10,7 +10,37 @@ class DashboardController extends Controller
 {
     public function home(){
         $profile = Profile::first();
-        return view('home', compact('profile'));
+        $totalFiles = File::count();
+        $totalFolders = Folder::count();
+        $totalCategories = Category::count();
+        $totalShortcuts = Shortcut::count();
+
+        // Data historis untuk grafik (6 bulan terakhir)
+        $monthlyFiles = File::selectRaw("strftime('%m', created_at) as month, strftime('%Y', created_at) as year, COUNT(*) as count")
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        $monthlyFolders = Folder::selectRaw("strftime('%m', created_at) as month, strftime('%Y', created_at) as year, COUNT(*) as count")
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        // Dummy data untuk web views (karena tidak ada data riil)
+        $monthlyViews = collect([
+            ['month' => 10, 'year' => 2025, 'count' => 150],
+            ['month' => 11, 'year' => 2025, 'count' => 200],
+            ['month' => 12, 'year' => 2025, 'count' => 180],
+            ['month' => 1, 'year' => 2026, 'count' => 220],
+            ['month' => 2, 'year' => 2026, 'count' => 250],
+            ['month' => 3, 'year' => 2026, 'count' => 300],
+        ]);
+
+        return view('home', compact('profile', 'totalFiles', 'totalFolders', 'totalCategories', 'totalShortcuts', 'monthlyFiles', 'monthlyFolders', 'monthlyViews'));
     }
     public function index(Request $request)
     {
