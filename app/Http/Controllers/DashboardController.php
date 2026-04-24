@@ -51,6 +51,12 @@ class DashboardController extends Controller
 
         $activeCategory = $isFiltering ? Category::find($request->category_id) : null;
         $isProfileView = $activeCategory && strtoupper($activeCategory->parent->name ?? '') == 'PROFILE';
+        // dd([
+        //     'isProfileView' => $isProfileView,
+        //     'category_id' => $request->category_id,
+        //     'folders' => Folder::where('category_id', $request->category_id)->get(),
+        //     'files' => File::all()
+        // ]); debug total files diprofile
 
         $activeFolder = null;
         $query = Folder::query();
@@ -59,7 +65,7 @@ class DashboardController extends Controller
             $activeFolder = Folder::find($currentFolderId);
             $query->where('parent_id', $currentFolderId);
         } elseif ($isFiltering) {
-            $query->where('category_id', $request->category_id)->whereNull('parent_id');
+            $query->where('category_id', $request->category_id);
         }
 
         // Logika Sorting
@@ -71,20 +77,46 @@ class DashboardController extends Controller
         $folders = $query->get();
 
         // Sorting untuk Files
-        $fileQuery = File::where('folder_id', $currentFolderId);
+        $fileQuery = File::query();
+
+        if ($currentFolderId) {
+            // Jika ada folder yang dipilih, ambil files dari folder tersebut
+            $fileQuery->where('folder_id', $currentFolderId);
+        } elseif ($isFiltering && $isProfileView) {
+            // Jika profile view tanpa folder dipilih, ambil files dari semua folders dalam kategori
+            $folderIds = Folder::where('category_id', $request->category_id)->pluck('id');
+            $fileQuery->whereIn('folder_id', $folderIds);
+        }
+
         if ($sort == 'name_asc') $fileQuery->orderBy('name', 'asc');
         elseif ($sort == 'name_desc') $fileQuery->orderBy('name', 'desc');
         elseif ($sort == 'latest') $fileQuery->orderBy('created_at', 'desc');
 
-        $filesInFolder = $currentFolderId ? $fileQuery->get() : collect();
+        $filesInFolder = $fileQuery->get();
         $recentFiles = File::orderBy('updated_at', 'desc')->take(5)->get();
 
         $profileData = Profile::first();
         $shortcuts = $isProfileView ? Shortcut::where('category_id', $request->category_id)->get() : collect();
 
+        // Hitung total items (folders + files) untuk profile view
+        if ($isProfileView) {
+            $totalFolderCount = Folder::where('category_id', $request->category_id)->count();
+
+            $folderIds = Folder::where('category_id', $request->category_id)->pluck('id');
+
+            $totalFileCount = File::whereIn('folder_id', $folderIds)->count();
+
+            $totalItems = $totalFolderCount + $totalFileCount;
+        } else {
+            $totalFolderCount = $folders->count();
+            $totalFileCount = $filesInFolder->count();
+            $totalItems = $totalFolderCount + $totalFileCount;
+        }
+
         return view('dashboard', compact(
             'categories', 'folders', 'recentFiles', 'isFiltering',
-            'currentFolderId', 'filesInFolder', 'isProfileView', 'profileData', 'shortcuts', 'activeCategory', 'activeFolder'
+            'currentFolderId', 'filesInFolder', 'isProfileView', 'profileData', 'shortcuts', 'activeCategory', 'activeFolder',
+            'totalItems', 'totalFolderCount', 'totalFileCount'
         ));
     }
 

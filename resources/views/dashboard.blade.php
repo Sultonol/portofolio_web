@@ -92,7 +92,7 @@
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-[10px] font-bold text-slate-400 uppercase">Total Files</p>
-                                        <p class="text-3xl font-black text-slate-800 mt-2">{{ $filesInFolder->count() + $folders->count() }}</p>
+                                        <p class="text-3xl font-black text-slate-800 mt-2">{{ $totalItems ?? 0 }}</p>
                                     </div>
                                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl animate-float">📁</div>
                                 </div>
