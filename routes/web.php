@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [DashboardController::class, 'home'])->name('home');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -15,3 +15,7 @@ Route::delete('/file/delete/{id}', [DashboardController::class, 'deleteFile'])->
 Route::post('/shortcut/store', [DashboardController::class, 'storeShortcut'])->name('shortcut.store');
 Route::delete('/shortcut/delete/{id}', [DashboardController::class, 'deleteShortcut'])->name('shortcut.delete');
 Route::put('/shortcut/update/{id}', [DashboardController::class, 'updateShortcut'])->name('shortcut.update');
+Route::post('/profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/api/profile', [ProfileController::class, 'show'])->name('profile.show');

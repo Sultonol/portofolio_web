@@ -13,13 +13,22 @@ class ProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        profile::create([
-        'full_name' => 'Ari Kusumastuti M.Pd M.Si',
-        'birth_place_date' => 'Malang, 1 Januari 2000',
-        'description' => 'Saya adalah seorang programmer yang fokus pada pengembangan aplikasi multi-platform menggunakan Flutter dan Laravel.',
-        'vision' => 'Menjadi pengembang solusi digital yang memberikan dampak positif bagi masyarakat.',
-        'mission' => 'Membangun sistem informasi yang efisien, aman, dan mudah digunakan oleh semua kalangan.',
-        'profile_category' => 'Pegawai'
-        ]);
+        // Cek apakah sudah ada profile, jika belum buat baru
+        if (!Profile::first()) {
+            Profile::create([
+                'full_name' => 'Sultonol Auliya',
+                'birth_place_date' => 'Jakarta, 15 Mei 1998',
+                'description' => 'Saya adalah seorang programmer yang fokus pada pengembangan aplikasi multi-platform menggunakan Flutter dan Laravel.',
+                'vision' => 'Menjadi pengembang solusi digital yang memberikan dampak positif bagi masyarakat dan industri teknologi.',
+                'mission' => 'Membangun sistem informasi yang efisien, aman, dan mudah digunakan oleh semua kalangan dengan inovasi berkelanjutan.',
+                'profile_category' => 'Programmer'
+            ]);
+        } else {
+            // Jika sudah ada, update data visi dan misi
+            Profile::first()->update([
+                'vision' => 'Menjadi pengembang solusi digital yang memberikan dampak positif bagi masyarakat dan industri teknologi.',
+                'mission' => 'Membangun sistem informasi yang efisien, aman, dan mudah digunakan oleh semua kalangan dengan inovasi berkelanjutan.'
+            ]);
+        }
     }
 }
